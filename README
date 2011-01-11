@@ -1,6 +1,5 @@
-Dancer::Plugin::Params::Normalization
+Dancer::Plugin::FlashMessage
 
-A Dancer plugin to normalize query parameters, like converting to lowercase,
-uppercase, or any other transformation.
+A Dancer plugin to display "flash messages" : short temporary messages
 
 
