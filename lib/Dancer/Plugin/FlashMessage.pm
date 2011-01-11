@@ -67,9 +67,9 @@ In your Dancer App :
 =head1 DESCRIPTION
 
 This plugin helps you display temporary messages, so called "flash messages".
-It proposes a C<flash()> method to define the content of the message. The
-plugin then takes care of attaching the content to the session, propagating it
-to the templating system, and then remove it from the session.
+It provides a C<flash()> method to define the message. The plugin then takes
+care of attaching the content to the session, propagating it to the templating
+system, and then removing it from the session.
 
 However, it's up to you to have a place in your views or layout where the
 message will be displayed. But that's not too hard (see L<SYNOPSYS>).
@@ -120,15 +120,15 @@ These are the default values. See below for a description of the keys
 
 =item token_name
 
-The name of the template token that will contain the hash of flash messages
-content. Default : flash
+The name of the template token that will contain the hash of flash messages.
+Default : flash
 
 =item session_hash_key
 
 You probably don't need that, but this setting allows you to change the name of
-the session key used to store the hash of flash message content. It may be
-useful in the unlikely case where you have key name conflicts in your session.
-Default : _flash
+the session key used to store the hash of flash messages. It may be useful in
+the unlikely case where you have key name conflicts in your session. Default :
+_flash
 
 =back
 
