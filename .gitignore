@@ -1,0 +1,12 @@
+_build
+.build
+Dancer-Plugin-*
+cover_db
+*~
+*#
+*.bak
+*.old
+*.rej
+*.swp
+*.tmp
+logs
