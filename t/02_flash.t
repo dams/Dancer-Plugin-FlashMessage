@@ -5,10 +5,11 @@ use Dancer::Test;
 use_ok 'Dancer::Plugin::FlashMessage';
 
 setting views => path('t', 'views');
+setting template => 'template_toolkit';
 
 ok(
     get '/' => sub {
-        set_flash('plop');
+        flash(error => 'plop');
         template 'index', { foo => 'bar' };
     }
 );

@@ -7,36 +7,25 @@ use Dancer ':syntax';
 use Dancer::Plugin;
 
 our $AUTHORITY = 'DAMS';
-our $VERSION = '0.1';
+our $VERSION = '0.2';
 
 my $conf = plugin_setting;
 
-my $auto_display        = $conf->{auto_display}        || 1;
-my $auto_remove         = $conf->{auto_remove}         || 1;
-my $token_name          = $conf->{token_name}          || '_flash';
-my $session_message_key = $conf->{session_message_key} || '_flash_message';
-my $session_display_key = $conf->{session_display_key} || '_flash_display';
+my $token_name       = $conf->{token_name}       || 'flash';
+my $session_hash_key = $conf->{session_hash_key} || '_flash';
 
-my $remove = sub () { session $session_display_key, 0;
-                      session $session_message_key, undef };
-
-register set_flash => sub ($) {
-    session $session_message_key, shift;
-    $auto_display
-      and session $session_display_key, 1;
+register flash => sub ($;$) {
+    my ($key, $value) = @_;
+    my $flash = session($session_hash_key);
+    @_ == 2
+      and $flash->{$key} = $value;
+    @_ == 1
+      and $value = delete $flash->{$key};
+    session($session_hash_key, $flash);
+    return $value;
 };
 
-register display_flash => sub () { session $session_display_key, 1 };
-
-register remove_flash => sub { $remove->() };
-
-before_template sub {
-    session $session_display_key
-      or return;
-    shift->{$token_name} = session $session_message_key;
-    $auto_remove
-      and $remove->();
-};
+before_template sub { shift->{$token_name} = session $session_hash_key };
 
 register_plugin;
 
@@ -52,14 +41,14 @@ Dancer::Plugin::FlashMessage - A plugin to display "flash messages" : short temp
 
 =head1 SYNOPSYS
 
-In your index.tt view or in your layout :
+Example with Template Toolkit: in your index.tt view or in your layout :
 
-  <% IF _flash_message %>
-    <div class=flash> <% _flash_message %> </div>
+  <% IF flash.error %>
+    <div class=error> <% flash.error %> </div>
   <% END %>
 
 In your css :
-  .flash { background: #CEE5F5; padding: 0.5em;
+  .error { background: #CEE5F5; padding: 0.5em;
            border: 1px solid #AACBE2; }
 
 In your Dancer App :
@@ -70,45 +59,43 @@ In your Dancer App :
   use Dancer::Plugin::FlashMessage;
 
   get '/hello' => sub {
-      set_flash()
+      flash error => 'Error message';
       template 'index';
   };
 
 =head1 DESCRIPTION
 
 This plugin helps you display temporary messages, so called "flash messages".
-It proposes a C<set_flash()> method to define the content of the message. The
-plugin then takes care of attaching the content to the session, propagate it to
-the templating system, and then remove it from the session.
+It proposes a C<flash()> method to define the content of the message. The
+plugin then takes care of attaching the content to the session, propagating it
+to the templating system, and then remove it from the session.
 
 However, it's up to you to have a place in your views or layout where the
 message will be displayed. But that's not too hard (see L<SYNOPSYS>).
 
+Basically, the plugin gives you access to the 'flash' hash in your views. It
+can be used to display flash messages.
+
 By default, the plugin works using a descent default configuration. However,
-you can change the behaviour of the plugin, so that flash messages are not
-automatically displayed or removed. See L<CONFIGURATION>
+you can change the behaviour of the plugin. See L<CONFIGURATION>
 
 =head1 METHODS
 
-=head2 set_flash
+=head2 flash
 
-This method takes a message (string) as argument, and stores it in the session
-as being the flash message content. Depending of the configuration, the flash
-message will be displayed automatically, or you'll have to call
-C<display_flash()> to display it.
+# sets the flash message for the warning key
+flash warning => 'some warning message';
 
-=head2 display_flash
+# retrieves and removes the flash message for the warning key
+my $warning_message = flash 'warning';
 
-This method is to be called only if the C<auto_display> configuration key is
-set to false. It will make sure the flash message is displayed in the next view
-rendering. Depending of the configuration, the message may be removed
-automatically, or you'll have to call C<remove_flash>
+This method can take 1 or 2 parameters. When called with two parameters, it
+sets the flash message for the given key.
 
-=head2 remove_flash
+When called with one parameter, it returns the value of the flash message of
+the given key, and also deletes this entry.
 
-This method is to be called only if the C<auto_remove> configuration key is
-false. When called, it will delete the flash message content from the session,
-and set its display flag to false, so the flash message will stop being displayed.
+In both cases, C<flash> always returns the value;
 
 =head1 CONFIGURATION
 
@@ -123,43 +110,24 @@ These are the default values. See below for a description of the keys
 
   plugins:
     FlashMessage:
-      auto_display: 1
-      auto_remove: 1
-      token_name: _flash
-      session_message_key: _flash_message
-      session_display_key: _flash_display
+      token_name: flash
+      session_hash_key: _flash
 
 =head2 configuration description
 
 =over
 
-=item auto_display
-
-If set to true, once set, the flash message will be displayed next time (and possibly
-following times, see C<auto_remove>) you render a view. Default : 1
-
-=item auto_remove
-
-If set to true, once displayed, the flash message will be automatically hidden
-and deleted. Default : 1
-
 =item token_name
 
-The name of the template token that will contain the flash message content. Default : _flash
+The name of the template token that will contain the hash of flash messages
+content. Default : flash
 
-=item session_message_key
-
-You probably don't need that, but this setting allows you to change the name of
-the session key used to store the flash message content. It may be useful in
-the unlikely case wher you have key name conflicts in your session. Default :
-_flash_message
-
-=item session_display_key
+=item session_hash_key
 
 You probably don't need that, but this setting allows you to change the name of
-the session key used to store the fact that the flash message needs to be
-displayed. It may be useful in the unlikely case wher you have key name
-conflicts in your session. Default : _flash_display
+the session key used to store the hash of flash message content. It may be
+useful in the unlikely case where you have key name conflicts in your session.
+Default : _flash
 
 =back
 
