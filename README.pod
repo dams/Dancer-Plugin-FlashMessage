@@ -13,6 +13,7 @@ Example with Template Toolkit: in your index.tt view or in your layout :
   <% END %>
 
 In your css :
+
   .error { background: #CEE5F5; padding: 0.5em;
            border: 1px solid #AACBE2; }
 
@@ -48,11 +49,11 @@ you can change the behaviour of the plugin. See L<CONFIGURATION>
 
 =head2 flash
 
-# sets the flash message for the warning key
-flash warning => 'some warning message';
+  # sets the flash message for the warning key
+  flash warning => 'some warning message';
 
-# retrieves and removes the flash message for the warning key
-my $warning_message = flash 'warning';
+  # retrieves and removes the flash message for the warning key
+  my $warning_message = flash 'warning';
 
 This method can take 1 or 2 parameters. When called with two parameters, it
 sets the flash message for the given key.
