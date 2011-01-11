@@ -1,0 +1,6 @@
+Dancer::Plugin::Params::Normalization
+
+A Dancer plugin to normalize query parameters, like converting to lowercase,
+uppercase, or any other transformation.
+
+
