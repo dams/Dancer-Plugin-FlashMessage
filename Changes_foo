@@ -1,0 +1,8 @@
+{{$NEXT}}
+	Dist-Zillification
+
+0.2
+	more Rails-like : flash is a hash of messages
+
+0.1
+	first version
