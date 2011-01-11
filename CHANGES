@@ -1,3 +1,6 @@
 
+Version 0.2
+	* more Rails-like : flash is a hash of messages
+
 Version 0.1
 	* first version
