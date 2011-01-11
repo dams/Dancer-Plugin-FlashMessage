@@ -1,0 +1,111 @@
+=pod
+
+=head1 NAME
+
+Dancer::Plugin::FlashMessage - A plugin to display "flash messages" : short temporary messages
+
+=head1 SYNOPSYS
+
+Example with Template Toolkit: in your index.tt view or in your layout :
+
+  <% IF flash.error %>
+    <div class=error> <% flash.error %> </div>
+  <% END %>
+
+In your css :
+  .error { background: #CEE5F5; padding: 0.5em;
+           border: 1px solid #AACBE2; }
+
+In your Dancer App :
+
+  package MyWebService;
+
+  use Dancer;
+  use Dancer::Plugin::FlashMessage;
+
+  get '/hello' => sub {
+      flash error => 'Error message';
+      template 'index';
+  };
+
+=head1 DESCRIPTION
+
+This plugin helps you display temporary messages, so called "flash messages".
+It proposes a C<flash()> method to define the content of the message. The
+plugin then takes care of attaching the content to the session, propagating it
+to the templating system, and then remove it from the session.
+
+However, it's up to you to have a place in your views or layout where the
+message will be displayed. But that's not too hard (see L<SYNOPSYS>).
+
+Basically, the plugin gives you access to the 'flash' hash in your views. It
+can be used to display flash messages.
+
+By default, the plugin works using a descent default configuration. However,
+you can change the behaviour of the plugin. See L<CONFIGURATION>
+
+=head1 METHODS
+
+=head2 flash
+
+# sets the flash message for the warning key
+flash warning => 'some warning message';
+
+# retrieves and removes the flash message for the warning key
+my $warning_message = flash 'warning';
+
+This method can take 1 or 2 parameters. When called with two parameters, it
+sets the flash message for the given key.
+
+When called with one parameter, it returns the value of the flash message of
+the given key, and also deletes this entry.
+
+In both cases, C<flash> always returns the value;
+
+=head1 CONFIGURATION
+
+=head2 no configuration
+
+With no configuration whatsoever, the plugin will work fine, thus contributing
+to the I<keep it simple> motto of Dancer.
+
+=head2 configuration default
+
+These are the default values. See below for a description of the keys
+
+  plugins:
+    FlashMessage:
+      token_name: flash
+      session_hash_key: _flash
+
+=head2 configuration description
+
+=over
+
+=item token_name
+
+The name of the template token that will contain the hash of flash messages
+content. Default : flash
+
+=item session_hash_key
+
+You probably don't need that, but this setting allows you to change the name of
+the session key used to store the hash of flash message content. It may be
+useful in the unlikely case where you have key name conflicts in your session.
+Default : _flash
+
+=back
+
+=head1 LICENCE
+
+This module is released under the same terms as Perl itself.
+
+=head1 AUTHORS
+
+This module has been written by Damien Krotkine <dams@cpan.org>.
+
+=head1 SEE ALSO
+
+L<Dancer>
+
+=cut
