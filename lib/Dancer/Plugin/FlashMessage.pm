@@ -1,5 +1,7 @@
 package Dancer::Plugin::FlashMessage;
 
+# ABSTRACT: Dancer plugin to display temporary messages, so called "flash messages".
+
 use strict;
 use warnings;
 
@@ -132,9 +134,14 @@ _flash
 
 =back
 
+=head1 COPYRIGHT
+
+This software is copyright (c) 2011 by Damien "dams" Krotkine.
+
 =head1 LICENCE
 
-This module is released under the same terms as Perl itself.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =head1 AUTHORS
 
