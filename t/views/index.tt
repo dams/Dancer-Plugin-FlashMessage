@@ -1,1 +1,1 @@
-foo : <% foo %>, message : <% IF flash.error %><% flash.error %><% END %>
+foo : <% foo %>, message : <% flash.error %>
