@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.303     2011-01-15 13:58:20 Europe/Paris
 	. Don't require Dancer::Plugin::TemplateToolkit (hence Template::Toolkit)
 	for tests
 	. Add warning about Dist::Zilla in Makefile.PL
