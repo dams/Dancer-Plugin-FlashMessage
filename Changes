@@ -1,4 +1,7 @@
 {{$NEXT}}
+	. Don't require Dancer::Plugin::TemplateToolkit (hence Template::Toolkit)
+	for tests
+	. Add warning about Dist::Zilla in Makefile.PL
 
 0.302     2011-01-11 17:41:49 Europe/Paris
 
