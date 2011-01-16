@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+0.304     2011-01-16 14:25:58 Europe/Paris
+	Fix tests
+
 0.303     2011-01-15 13:58:20 Europe/Paris
 	. Don't require Dancer::Plugin::TemplateToolkit (hence Template::Toolkit)
 	for tests
