@@ -15,6 +15,7 @@ my $conf = plugin_setting;
 
 my $token_name       = $conf->{token_name}       || 'flash';
 my $session_hash_key = $conf->{session_hash_key} || '_flash';
+my $persistence      = $conf->{persistence}      || 0;
 
 register flash => sub ($;$) {
     my ($key, $value) = @_;
@@ -28,6 +29,8 @@ register flash => sub ($;$) {
 };
 
 before_template sub { shift->{$token_name} = session $session_hash_key };
+
+$persistence or after sub { session($session_hash_key, {}) };
 
 register_plugin;
 
@@ -79,8 +82,8 @@ message will be displayed. But that's not too hard (see L<SYNOPSYS>).
 Basically, the plugin gives you access to the 'flash' hash in your views. It
 can be used to display flash messages.
 
-By default, the plugin works using a descent default configuration. However,
-you can change the behaviour of the plugin. See L<CONFIGURATION>
+By default, the plugin works using a descent configuration. However, you can
+change the behaviour of the plugin. See L<CONFIGURATION>
 
 =head1 METHODS
 
@@ -102,17 +105,16 @@ In both cases, C<flash> always returns the value;
 
 =head1 CONFIGURATION
 
-=head2 no configuration
-
 With no configuration whatsoever, the plugin will work fine, thus contributing
 to the I<keep it simple> motto of Dancer.
 
-=head2 configuration default
+=head2 configuration default values
 
 These are the default values. See below for a description of the keys
 
   plugins:
     FlashMessage:
+      persistence: 0
       token_name: flash
       session_hash_key: _flash
 
@@ -120,23 +122,29 @@ These are the default values. See below for a description of the keys
 
 =over
 
+=item persistence
+
+If set to a true value, flash messages will be persistent, i.e. survive more
+than one request. If set to a false value, flash messages will be suppressed
+once templating has been done. B<Default> : C<0>
+
 =item token_name
 
 The name of the template token that will contain the hash of flash messages.
-Default : flash
+B<Default> : C<flash>
 
 =item session_hash_key
 
 You probably don't need that, but this setting allows you to change the name of
 the session key used to store the hash of flash messages. It may be useful in
-the unlikely case where you have key name conflicts in your session. Default :
-_flash
+the unlikely case where you have key name conflicts in your session. B<Default> :
+C<_flash>
 
 =back
 
 =head1 COPYRIGHT
 
-This software is copyright (c) 2011 by Damien "dams" Krotkine.
+This software is copyright (c) 2011 by Damien "dams" Krotkine <dams@cpan.org>.
 
 =head1 LICENCE
 
@@ -145,7 +153,7 @@ the same terms as the Perl 5 programming language system itself.
 
 =head1 AUTHORS
 
-This module has been written by Damien Krotkine <dams@cpan.org>.
+This module has been written by Damien "dams" Krotkine <dams@cpan.org>.
 
 =head1 SEE ALSO
 
