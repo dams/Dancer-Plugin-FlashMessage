@@ -1,7 +1,10 @@
 {{$NEXT}}
+	. Fix RT#65009
+	. 'persistence' configuration key added
+	. tests for (non) persistence added
 
 0.304     2011-01-16 14:25:58 Europe/Paris
-	Fix tests
+	. Fix tests
 
 0.303     2011-01-15 13:58:20 Europe/Paris
 	. Don't require Dancer::Plugin::TemplateToolkit (hence Template::Toolkit)
@@ -13,10 +16,10 @@
 0.301     2011-01-11 17:40:16 Europe/Paris
 
 0.300     2011-01-11 17:39:00 Europe/Paris
-	Dist-Zillification
+	. Dist-Zillification
 
 0.2
-	more Rails-like : flash is a hash of messages
+	. more Rails-like : flash is a hash of messages
 
 0.1
-	first version
+	. first version
