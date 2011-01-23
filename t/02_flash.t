@@ -1,4 +1,4 @@
-use Test::More tests => 4, import => ['!pass'];
+use Test::More tests => 7, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
@@ -10,9 +10,17 @@ ok(
     get '/' => sub {
         flash(error => 'plop');
         template 'index', { foo => 'bar' };
+    });
+ok(
+    get '/different' => sub {
+        template 'index', { foo => 'bar' };
     }
 );
 
+# first time we get the error message
 route_exists [ GET => '/' ];
-response_content_like( [ GET => '/' ], qr/foo : bar, message : plop/ );
+response_content_like( [ GET => '/' ], qr/foo : bar, message : plop$/ );
+# second time the error has disappeared
+route_exists [ GET => '/different' ];
+response_content_like( [ GET => '/different' ], qr/foo : bar, message : \s*$/ );
 
