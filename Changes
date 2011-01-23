@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.305     2011-01-23 19:20:17 Europe/Paris
 	. Fix RT#65009
 	. 'persistence' configuration key added
 	. tests for (non) persistence added
