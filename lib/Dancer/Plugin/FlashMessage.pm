@@ -19,18 +19,24 @@ my $persistence      = $conf->{persistence}      || 0;
 
 register flash => sub ($;$) {
     my ($key, $value) = @_;
-    my $flash = session($session_hash_key);
-    @_ == 2
-      and $flash->{$key} = $value;
-    @_ == 1
-      and $value = delete $flash->{$key};
-    session($session_hash_key, $flash);
+    my $flash = session $session_hash_key || {};
+    @_ == 2 and $flash->{$key} = $value;
+    @_ == 1 and $value = $persistence ? $flash->{$key} : delete $flash->{$key};
+    session $session_hash_key, $flash;
     return $value;
 };
 
-before_template sub { shift->{$token_name} = session $session_hash_key };
-
-$persistence or after sub { session($session_hash_key, {}) };
+before_template sub {
+   shift->{$token_name} = {  map { my $key = $_; my $value;
+                                   ( $key, sub { defined $value and return $value;
+                                                 my $flash = session $session_hash_key || {};
+                                                 $value = $persistence ? $flash->{$key} : delete $flash->{$key};
+                                                 session $session_hash_key, $flash;
+                                                 return $value;
+                                               } );
+                                 } ( keys %{session $session_hash_key || {} })
+                          };
+};
 
 register_plugin;
 
@@ -92,14 +98,16 @@ change the behaviour of the plugin. See L<CONFIGURATION>
   # sets the flash message for the warning key
   flash warning => 'some warning message';
 
-  # retrieves and removes the flash message for the warning key
+  # retrieves and removes (unless persistence is true) the flash message for
+  # the warning key
   my $warning_message = flash 'warning';
 
 This method can take 1 or 2 parameters. When called with two parameters, it
 sets the flash message for the given key.
 
 When called with one parameter, it returns the value of the flash message of
-the given key, and also deletes this entry.
+the given key. It usually also deletes this entry, but if you have set the
+'persistence' configuration key to true, the entry won't be deleted. See below
 
 In both cases, C<flash> always returns the value;
 
