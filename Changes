@@ -1,5 +1,11 @@
 {{$NEXT}}
 
+0.306     2011-01-28 16:15:49 Europe/Paris
+	. Fix RT#65009 again
+	. flash messages are now smart enough to stay alive across multiple
+	  requests, until they are used in templates ( thanks to Flavio Poletti
+	  for the idea )
+
 0.305     2011-01-23 19:20:17 Europe/Paris
 	. Fix RT#65009
 	. 'persistence' configuration key added
@@ -10,7 +16,7 @@
 
 0.303     2011-01-15 13:58:20 Europe/Paris
 	. Don't require Dancer::Plugin::TemplateToolkit (hence Template::Toolkit)
-	for tests
+	  for tests
 	. Add warning about Dist::Zilla in Makefile.PL
 
 0.302     2011-01-11 17:41:49 Europe/Paris
