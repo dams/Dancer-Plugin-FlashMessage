@@ -1,4 +1,6 @@
 {{$NEXT}}
+	. add Dancer dependancy
+	. get Makefile.PL properly generated
 
 0.306     2011-01-28 16:15:49 Europe/Paris
 	. Fix RT#65009 again
