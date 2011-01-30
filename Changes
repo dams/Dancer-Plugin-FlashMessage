@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.307     2011-01-30 13:15:30 Europe/Paris
 	. add Dancer dependancy
 	. get Makefile.PL properly generated
 
