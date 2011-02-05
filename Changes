@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.310     2011-02-05 18:50:27 Europe/Paris
         . fix case where no flash has been defined
         . thanks to ambs and sawyerX
 
