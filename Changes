@@ -1,4 +1,6 @@
 {{$NEXT}}
+        . fix case where no flash has been defined
+        . thanks to ambs and sawyerX
 
 0.309     2011-02-05 13:24:13 Europe/Paris
         . documentation fixed

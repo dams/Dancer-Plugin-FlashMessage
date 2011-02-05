@@ -33,7 +33,7 @@ before_template sub {
                                                  session $session_hash_key, $flash;
                                                  return $value;
                                                } );
-                                 } ( keys %{session $session_hash_key || {} })
+                                 } ( keys %{session $session_hash_key or {} })
                           };
 };
 
