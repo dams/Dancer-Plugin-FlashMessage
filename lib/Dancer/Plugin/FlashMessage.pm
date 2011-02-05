@@ -87,7 +87,7 @@ message will be displayed. But that's not too hard (see L<SYNOPSYS>).
 Basically, the plugin gives you access to the 'flash' hash in your views. It
 can be used to display flash messages.
 
-By default, the plugin works using a descent configuration. However, you can
+By default, the plugin works using a decent configuration. However, you can
 change the behaviour of the plugin. See L<CONFIGURATION>
 
 =head1 METHODS
@@ -107,6 +107,18 @@ When called with one parameter, it returns the value of the flash message of
 the given key. The message is deleted from the flash hash in the session.
 
 In both cases, C<flash> always returns the value;
+
+=head1 IN YOUR TEMPLATE
+
+After having set a flash message using C<flash> in your Dancer route, you can
+access the flash message from within your template. The plugin provides you
+with the C<flash> hashref, that you can access in your template, for example
+like this :
+
+  <div class=error> <% flash.error %> </div>
+
+When you use it in your template, the flash message is deleted. So next
+time, C<flash.error> will not exist.
 
 =head1 CONFIGURATION
 
