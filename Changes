@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+0.309     2011-02-05 13:24:13 Europe/Paris
+        . documentation fixed
+
 0.308     2011-02-05 13:14:07 Europe/Paris
 	. remove the persistence config
 	. get the module to be as simple as possible
