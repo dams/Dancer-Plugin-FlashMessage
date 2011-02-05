@@ -1,16 +1,14 @@
-package Dancer::Plugin::FlashMessage;
-
-# ABSTRACT: Dancer plugin to display temporary messages, so called "flash messages".
-
 use strict;
 use warnings;
-use Carp;
 
+package Dancer::Plugin::FlashMessage;
+# ABSTRACT: Dancer plugin to display temporary messages, so called "flash messages".
+
+use Carp;
 use Dancer ':syntax';
 use Dancer::Plugin;
 
 our $AUTHORITY = 'DAMS';
-our $VERSION = '0.2';
 
 my $conf = plugin_setting;
 
