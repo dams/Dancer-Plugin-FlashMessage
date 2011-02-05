@@ -6,7 +6,14 @@ Dancer::Plugin::FlashMessage - A plugin to display "flash messages" : short temp
 
 =head1 SYNOPSYS
 
-Example with Template Toolkit: in your index.tt view or in your layout :
+Example with Template Toolkit
+
+In your configuration, make sure you have session configured. Of course you can
+use any session engine :
+
+  session: "simple"
+
+In your index.tt view or in your layout :
 
   <% IF flash.error %>
     <div class=error> <% flash.error %> </div>
