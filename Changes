@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.311     2011-02-05 21:27:23 Europe/Paris
         . fix versioning issue
         . check there is a session engine
         . update documentation
