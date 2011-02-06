@@ -1,4 +1,5 @@
 {{$NEXT}}
+        . depends on Dancer 1.3001
 
 0.311     2011-02-05 21:27:23 Europe/Paris
         . fix versioning issue
