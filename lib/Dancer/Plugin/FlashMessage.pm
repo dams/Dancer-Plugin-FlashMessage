@@ -29,7 +29,7 @@ register flash => sub ($;$) {
     return $value;
 };
 
-before_template sub {
+hook before_template => sub {
     shift->{$token_name} = {  map { my $key = $_; my $value;
                                     ( $key, sub { defined $value and return $value;
                                                   my $flash = session($session_hash_key) || {};
