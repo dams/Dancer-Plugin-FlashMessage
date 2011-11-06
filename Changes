@@ -1,4 +1,5 @@
 {{$NEXT}}
+        . fixed hooks deprecation
 
 0.313     2011-02-07 10:11:55 Europe/Paris
         . fixed operators priorities
