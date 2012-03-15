@@ -29,7 +29,7 @@ register flash => sub ($;$) {
     return $value;
 };
 
-hook before_template => sub {
+hook before_template_render => sub {
     shift->{$token_name} = {  map { my $key = $_; my $value;
                                     ( $key, sub { defined $value and return $value;
                                                   my $flash = session($session_hash_key) || {};
@@ -41,7 +41,7 @@ hook before_template => sub {
                            };
 };
 
-register_plugin;
+register_plugin for_versions => [ 1, 2 ];
 
 1;
 
