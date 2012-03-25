@@ -16,29 +16,45 @@ my $session_hash_key = $conf->{session_hash_key} || '_flash';
 
 my $session_engine;
 
-register flash => sub ($;$) {
+set template => 'template_toolkit';
+
+register flash => sub {
+    my $dsl = shift;
     my ($key, $value) = @_;
 
-    $session_engine ||= engine 'session'
-      or croak __PACKAGE__ . " error2 : there is no session engine configured in the configuration. You need a session engine to be able to use this plugin";
+    if (! defined $session_engine) {
+        eval { $session_engine = $dsl->engine( 'session' ) };
+        $@ and croak __PACKAGE__ . " error2 : there is no session engine configured in the configuration. You need a session engine to be able to use this plugin";
+    }
 
-    my $flash = session($session_hash_key) || {};
+    my $flash = $dsl->session($session_hash_key) || {};
     @_ == 2 and $flash->{$key} = $value;
     @_ == 1 and $value = delete $flash->{$key};
-    session $session_hash_key, $flash;
+    
+    $dsl->session($session_hash_key, $flash);
     return $value;
 };
 
 hook before_template => sub {
-    shift->{$token_name} = {  map { my $key = $_; my $value;
-                                    ( $key, sub { defined $value and return $value;
-                                                  my $flash = session($session_hash_key) || {};
-                                                  $value = delete $flash->{$key};
-                                                  session $session_hash_key, $flash;
-                                                  return $value;
-                                              } );
-                                } ( keys %{session($session_hash_key) || {} })
-                           };
+    my $tokens = shift;
+
+    my @keys_in_session = keys %{session($session_hash_key) || {}};
+
+    $tokens->{$token_name} = {
+        map {
+            my $key = $_;
+            my $value;
+            (   $key,
+                sub {
+                    defined $value and return $value;
+                    my $flash = session($session_hash_key) || {};
+                    $value = delete $flash->{$key};
+                    session $session_hash_key, $flash;
+                    return $value;
+                }
+            );
+          } @keys_in_session
+    };
 };
 
 register_plugin;
