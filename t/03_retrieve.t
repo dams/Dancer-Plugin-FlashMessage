@@ -4,6 +4,11 @@ use Dancer::Test;
 
 use_ok 'Dancer::Plugin::FlashMessage';
 
-is(flash(foo => 'bar'), 'bar');
-is(flash('foo'), 'bar');
-is(flash('foo'), undef);
+get '/' => sub {
+    
+    is(flash(foo => 'bar'), 'bar');
+    is(flash('foo'), 'bar');
+    is(flash('foo'), undef);
+};
+
+dancer_response GET => '/';
