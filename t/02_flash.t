@@ -28,6 +28,7 @@ response_content_like( [ GET => '/nothing' ], qr/foo :\s*, message :\s*$/ );
 # first time we get the error message
 route_exists [ GET => '/' ];
 response_content_like( [ GET => '/' ], qr/foo : bar, message : plop$/ );
+
 # second time the error has disappeared
 route_exists [ GET => '/different' ];
 response_content_like( [ GET => '/different' ], qr/foo : bar, message : \s*$/ );
