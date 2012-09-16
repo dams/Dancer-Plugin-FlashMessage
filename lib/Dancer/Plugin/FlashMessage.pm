@@ -16,7 +16,15 @@ my $session_hash_key = $conf->{session_hash_key} || '_flash';
 
 my $session_engine;
 
-register flash => sub ($;$) {
+my $dancer_major_version = eval { int(dancer_version()); } || 1;
+
+register flash => sub {
+    my $dsl;
+
+    if ($dancer_major_version == 2) {
+        $dsl = shift;
+    }
+
     my ($key, $value) = @_;
 
     $session_engine ||= engine 'session'
@@ -42,6 +50,16 @@ hook before_template_render => sub {
 };
 
 register_plugin for_versions => [ 1, 2 ];
+
+package Dancer::Plugin::FlashMessage::FakeDSL;
+
+our $AUTOLOAD;
+sub AUTOLOAD {
+    my $f = (split /::/, $AUTOLOAD)[-1];
+    print STDERR " --- $f";
+    shift;
+    &{"Dancer::$f"}(@_);    
+}
 
 1;
 
@@ -165,7 +183,7 @@ C<_flash>
 
 =head1 COPYRIGHT
 
-This software is copyright (c) 2011 by Damien "dams" Krotkine <dams@cpan.org>.
+This software is copyright (c) 2011-2012 by Damien "dams" Krotkine <dams@cpan.org>.
 
 =head1 LICENCE
 
