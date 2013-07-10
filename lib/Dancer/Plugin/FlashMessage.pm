@@ -30,18 +30,50 @@ register flash => sub ($;$) {
 };
 
 hook before_template => sub {
-    shift->{$token_name} = {  map { my $key = $_; my $value;
-                                    ( $key, sub { defined $value and return $value;
-                                                  my $flash = session($session_hash_key) || {};
-                                                  $value = delete $flash->{$key};
-                                                  session $session_hash_key, $flash;
-                                                  return $value;
-                                              } );
-                                } ( keys %{session($session_hash_key) || {} })
-                           };
+    my $data = shift;
+    my $flash = Dancer::Plugin::FlashMessage::_object->new(
+      %{ session($session_hash_key) || {} }
+    );
+    var $session_hash_key, $flash;
+    $data->{$token_name} = $flash;
+};
+
+hook after => sub {
+    session $session_hash_key, { %{ var($session_hash_key) || {} } };
 };
 
 register_plugin;
+
+package
+    Dancer::Plugin::FlashMessage::_object; # hide from PAUSE
+
+our $AUTOLOAD;
+
+sub new {
+    my $class = shift;
+    my $self = bless { @_ }, $class;
+    # create accessors in case some template engine checks $object->can( $attr )
+    for my $k ( keys %$self ) {
+      unless ($self->can($k)) {
+        no strict 'refs';
+        *{$k} = sub { delete $_[0]->{$k} };
+      }
+    }
+    return $self;
+}
+
+sub has_    { !!     $_[0]->{$_[1]}         }
+sub peek_   {        $_[0]->{$_[1]}         }
+sub set_    {        $_[0]->{$_[1]} = $_[2] }
+sub get_    { delete $_[0]->{$_[1]}         }
+
+sub AUTOLOAD {
+    my $self = shift;
+    my ($method, $attr) = $AUTOLOAD =~ /^.*::(has_|peek_|set_|get_)?(.*)$/;
+    $method ||= 'get_';
+    return unless $self->can($method);
+    return $self->$method($attr, @_);
+}
 
 1;
 
@@ -64,7 +96,7 @@ use any session engine :
 
 In your index.tt view or in your layout :
 
-  <% IF flash.error %>
+  <% IF flash.has_error %>
     <div class=error> <% flash.error %> </div>
   <% END %>
 
