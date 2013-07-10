@@ -1,0 +1,3 @@
+<% IF flash.error %>
+  <div class=error><% flash.error %></div>
+<% END %>
