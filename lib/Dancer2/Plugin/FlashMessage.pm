@@ -51,16 +51,6 @@ on_plugin_import {
 
 register_plugin for_versions => [2];
 
-package Dancer2::Plugin::FlashMessage::FakeDSL;
-
-our $AUTOLOAD;
-sub AUTOLOAD {
-    my $f = (split /::/, $AUTOLOAD)[-1];
-    print STDERR " --- $f";
-    shift;
-    &{"Dancer2::$f"}(@_);
-}
-
 1;
 
 __END__
