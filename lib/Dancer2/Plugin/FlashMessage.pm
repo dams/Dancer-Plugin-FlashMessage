@@ -12,8 +12,7 @@ our $AUTHORITY = 'DAMS';
 register flash => sub {
     my ($dsl, $key, $value) = @_;
 
-    my $conf = plugin_setting();
-    my $session_hash_key = $conf->{session_hash_key} || '_flash';
+    my $session_hash_key = plugin_setting->{session_hash_key} || '_flash';
 
     $dsl->engine('session')
       or croak __PACKAGE__ . " error2 : there is no session engine configured in the configuration. You need a session engine to be able to use this plugin";
@@ -30,9 +29,8 @@ register flash => sub {
 on_plugin_import {
     my $dsl = shift;
 
-    my $conf = plugin_setting();
-    my $session_hash_key = $conf->{session_hash_key} || '_flash';
-    my $token_name       = $conf->{token_name} || 'flash';
+    my $session_hash_key = plugin_setting->{session_hash_key} || '_flash';
+    my $token_name       = plugin_setting->{token_name}       || 'flash';
 
     my $hook = sub {
         shift->{$token_name} = {
