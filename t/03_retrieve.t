@@ -1,24 +1,22 @@
-use Test::More tests => 7, import => ['!pass'];
-use Dancer ':syntax';
-use Dancer::Test;
 
-setting views => path('t', 'views');
-setting template => 'template_toolkit';
-setting session => 'YAML';
+use Test::More tests => 4, import => ['!pass'];
+use Dancer2;
 
-use_ok 'Dancer::Plugin::FlashMessage';
 
-ok(
-    get '/set' => sub {
-        my $r = flash(foo => 'bar');
-        return $r;
-    });
+{
+    package App;
+    use Dancer2 ':syntax';
+    use Dancer2::Plugin::FlashMessage;
 
-ok(
-    get '/get' => sub {
-        my $r = flash('foo');
-        return $r;
-    });
+    setting views => path('t', 'views');
+    setting template => 'template_toolkit';
+    setting session => 'simple';
+
+    get '/set' => sub { my $r = flash(foo => 'bar'); $r };
+    get '/get' => sub { my $r = flash('foo'); $r };
+}
+
+use Dancer2::Test apps => [ 'App' ];
 
 route_exists [ GET => '/set' ];
 response_content_like( [ GET => '/set' ], qr/^bar$/ );

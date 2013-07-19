@@ -17,7 +17,7 @@ WriteMakefile1(
     },
 
     PREREQ_PM => {
-        'Dancer' => '1.2003',
+        'Dancer2' => '0.04',
     },
 
     test => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},

@@ -1,64 +1,62 @@
 use strict;
 use warnings;
 
-package Dancer::Plugin::FlashMessage;
+package Dancer2::Plugin::FlashMessage;
 # ABSTRACT: Dancer plugin to display temporary messages, so called "flash messages".
 
 use Carp;
-use Dancer ':syntax';
-use Dancer::Plugin;
+use Dancer2::Plugin;
 
 our $AUTHORITY = 'DAMS';
 
-my $conf = plugin_setting;
-my $token_name       = $conf->{token_name}       || 'flash';
-my $session_hash_key = $conf->{session_hash_key} || '_flash';
-
-my $session_engine;
-
-my $dancer_major_version = eval { int(dancer_version()); } || 1;
+my ($conf, $session_hash_key, $token_name);
 
 register flash => sub {
-    my $dsl;
+    my ($dsl, $key, $value) = @_;
 
-    if ($dancer_major_version == 2) {
-        $dsl = shift;
-    }
-
-    my ($key, $value) = @_;
-
-    $session_engine ||= engine 'session'
+    $dsl->engine('session')
       or croak __PACKAGE__ . " error2 : there is no session engine configured in the configuration. You need a session engine to be able to use this plugin";
 
-    my $flash = session($session_hash_key) || {};
-    @_ == 2 and $flash->{$key} = $value;
-    @_ == 1 and $value = delete $flash->{$key};
-    session $session_hash_key, $flash;
+    my $flash = $dsl->session($session_hash_key) || {};
+    @_ == 3 and $flash->{$key} = $value;
+    @_ == 2 and $value = delete $flash->{$key};
+    $dsl->session($session_hash_key, $flash);
+
     return $value;
 };
 
-hook before_template_render => sub {
-    shift->{$token_name} = {  map { my $key = $_; my $value;
-                                    ( $key, sub { defined $value and return $value;
-                                                  my $flash = session($session_hash_key) || {};
-                                                  $value = delete $flash->{$key};
-                                                  session $session_hash_key, $flash;
-                                                  return $value;
-                                              } );
-                                } ( keys %{session($session_hash_key) || {} })
-                           };
+on_plugin_import {
+    my $dsl = shift;
+
+    $conf = plugin_setting();
+    $session_hash_key = $conf->{session_hash_key} || '_flash';
+    $token_name       = $conf->{token_name} || 'flash';
+
+    my $hook = sub {
+        shift->{$token_name} = {
+               map { my $key = $_; my $value;
+                     ( $key, sub { defined $value and return $value;
+                                   my $flash = $dsl->session($session_hash_key) || {};
+                                   $value = delete $flash->{$key};
+                                   $dsl->session($session_hash_key, $flash);
+                                   return $value;
+                               } );
+                 } ( keys %{$dsl->session($session_hash_key) || {} })
+                               }};
+    $dsl->app->add_hook(Dancer2::Core::Hook->new(name => 'before_template_render',
+                                                 code => $hook));
 };
 
-register_plugin for_versions => [ 1, 2 ];
+register_plugin for_versions => [2];
 
-package Dancer::Plugin::FlashMessage::FakeDSL;
+package Dancer2::Plugin::FlashMessage::FakeDSL;
 
 our $AUTOLOAD;
 sub AUTOLOAD {
     my $f = (split /::/, $AUTOLOAD)[-1];
     print STDERR " --- $f";
     shift;
-    &{"Dancer::$f"}(@_);    
+    &{"Dancer2::$f"}(@_);
 }
 
 1;
@@ -69,7 +67,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Plugin::FlashMessage - A plugin to display "flash messages" : short temporary messages
+Dancer2::Plugin::FlashMessage - A plugin to display "flash messages" : short temporary messages
 
 =head1 SYNOPSYS
 
@@ -91,12 +89,12 @@ In your css :
   .error { background: #CEE5F5; padding: 0.5em;
            border: 1px solid #AACBE2; }
 
-In your Dancer App :
+In your Dancer2 App :
 
   package MyWebService;
 
-  use Dancer;
-  use Dancer::Plugin::FlashMessage;
+  use Dancer2;
+  use Dancer2::Plugin::FlashMessage;
 
   get '/hello' => sub {
       flash error => 'Error message';
@@ -196,6 +194,6 @@ This module has been written by Damien "dams" Krotkine <dams@cpan.org>.
 
 =head1 SEE ALSO
 
-L<Dancer>
+L<Dancer2>
 
 =cut

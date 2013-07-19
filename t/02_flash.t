@@ -1,31 +1,21 @@
 
-# add at the end of T::Tiny
-#        ref($cursor) eq 'CODE'
-#          and $cursor = $cursor->();
+use Test::More tests => 6, import => ['!pass'];
+use Dancer2;
 
+{
+    package App;
+    use Dancer2 ':syntax';
+    use Dancer2::Plugin::FlashMessage;
 
-use Test::More tests => 10, import => ['!pass'];
-use Dancer ':syntax';
-use Dancer::Test;
+    setting views   => path('t', 'views');
+    setting session => 'YAML';
 
-setting views => path('t', 'views');
+    get '/nothing'   => sub {  template 'index', { }; };
+    get '/'          => sub {  flash(error => 'plop');  template 'index', { foo => 'bar' }; };
+    get '/different' => sub {  template 'index', { foo => 'bar' }; };
+}
 
-use_ok 'Dancer::Plugin::FlashMessage';
-
-ok(
-    get '/nothing' => sub {
-        template 'index', { };
-    });
-ok(
-    get '/' => sub {
-        flash(error => 'plop');
-        template 'index', { foo => 'bar' };
-    });
-ok(
-    get '/different' => sub {
-        template 'index', { foo => 'bar' };
-    }
-);
+use Dancer2::Test apps => [ 'App' ];
 
 # empty route
 route_exists [ GET => '/nothing' ];
