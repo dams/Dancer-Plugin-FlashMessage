@@ -8,9 +8,9 @@ use Dancer2;
     use Dancer2 ':syntax';
     use Dancer2::Plugin::FlashMessage;
 
-    setting views => path('t', 'views');
-    setting template => 'template_toolkit';
-    setting session => 'simple';
+    set views => path('t', 'views');
+    set template => 'template_toolkit';
+    set session => 'Simple';
 
     get '/set' => sub { my $r = flash(foo => 'bar'); $r };
     get '/get' => sub { my $r = flash('foo'); $r };

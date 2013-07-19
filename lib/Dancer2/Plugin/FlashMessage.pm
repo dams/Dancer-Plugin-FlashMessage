@@ -9,15 +9,17 @@ use Dancer2::Plugin;
 
 our $AUTHORITY = 'DAMS';
 
-my ($conf, $session_hash_key, $token_name);
-
 register flash => sub {
     my ($dsl, $key, $value) = @_;
+
+    my $conf = plugin_setting();
+    my $session_hash_key = $conf->{session_hash_key} || '_flash';
 
     $dsl->engine('session')
       or croak __PACKAGE__ . " error2 : there is no session engine configured in the configuration. You need a session engine to be able to use this plugin";
 
     my $flash = $dsl->session($session_hash_key) || {};
+
     @_ == 3 and $flash->{$key} = $value;
     @_ == 2 and $value = delete $flash->{$key};
     $dsl->session($session_hash_key, $flash);
@@ -28,9 +30,9 @@ register flash => sub {
 on_plugin_import {
     my $dsl = shift;
 
-    $conf = plugin_setting();
-    $session_hash_key = $conf->{session_hash_key} || '_flash';
-    $token_name       = $conf->{token_name} || 'flash';
+    my $conf = plugin_setting();
+    my $session_hash_key = $conf->{session_hash_key} || '_flash';
+    my $token_name       = $conf->{token_name} || 'flash';
 
     my $hook = sub {
         shift->{$token_name} = {
