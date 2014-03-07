@@ -87,18 +87,24 @@ Dancer::Plugin::FlashMessage - A plugin to display "flash messages" : short temp
 
 =head1 SYNOPSYS
 
-Example with Template Toolkit
+Examples
 
 In your configuration, make sure you have session configured. Of course you can
 use any session engine :
 
   session: "simple"
 
-In your index.tt view or in your layout :
+Using Template::Toolkit in your index.tt view or in your layout :
 
   <% IF flash.has_error %>
     <div class=error> <% flash.error %> </div>
   <% END %>
+
+If using Xslate with TTerse :
+
+  [% IF flash.info %]
+    <div class="error">[% (flash.info)() %]</div>
+  [% END %]
 
 In your css :
 
@@ -151,7 +157,7 @@ the given key. The message is deleted from the flash hash in the session.
 
 In both cases, C<flash> always returns the value;
 
-=head1 IN YOUR TEMPLATE
+=head1 IN YOUR TEMPLATE (Template Toolkit)
 
 After having set a flash message using C<flash> in your Dancer route, you can
 access the flash message from within your template. The plugin provides you
@@ -162,6 +168,18 @@ like this :
 
 When you use it in your template, the flash message is deleted. So next
 time, C<flash.error> will not exist.
+
+=head1 IN YOUR TEMPLATE (C<Text::Xslate>)
+
+Things work much that same as in Template Toolkit, except that the
+flash.error will return a coderef that needs to be called to return
+the message.
+
+  <div class=error> <% (flash.error)() %> </div>
+
+The flash.error when called will return the message, and also delete
+the message from the session.  In Template Toolkit this is
+automatically done it is not automatically called in C<Text::Xslate>.
 
 =head1 CONFIGURATION
 
